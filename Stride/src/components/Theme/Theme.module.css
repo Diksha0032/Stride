@@ -1,10 +1,12 @@
 .ThemeContainer{
   display:flex;
   align-items: center;
+  position: fixed;
+  top:16px;
+  right:16px;
 }
 
 .ThemeImg{
-  background: grey;
   height: 36px;;
   width:36px;
   border:round;

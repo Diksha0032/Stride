@@ -7,6 +7,15 @@
   padding: 16px;
 }
 
+.HeaderFlex{
+  display: flex;
+  justify-content: space-between;
+}
+
+.ThemeIcon{
+  position: block;
+}
+
 .Header {
   padding-left: calc(260px + 16px);
   text-align: center;

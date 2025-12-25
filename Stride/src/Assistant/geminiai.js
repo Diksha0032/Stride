@@ -1,4 +1,3 @@
-// geminiai.js - Complete rewrite for @google/genai
 import { GoogleGenAI } from "@google/genai";
 
 const googleai = new GoogleGenAI({
@@ -8,7 +7,7 @@ const googleai = new GoogleGenAI({
 export class Assistant {
   #model;
 
-  constructor(history = [], model = "gemini-1.5-flash") {
+  constructor(history = [], model = "gemini-1.5-flash",) {
     this.#model = model;
   }
 

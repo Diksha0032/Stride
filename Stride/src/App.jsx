@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react'
 import { Chat } from './components/Chat/Chat';
 import {Sidebar} from "./components/Sidebar/Sidebar"
+import { v4 as uuidv4 } from 'uuid';
 import {Assistant} from "./Assistant/geminiai"
-//import {Theme} from "./components/Theme/Theme"
+import {Theme} from "./components/Theme/Theme"
 import styles from './App.module.css'
+import { useEffect } from 'react';
 
 const CHATS = [
   {
@@ -33,21 +35,30 @@ const CHATS = [
 function App() {
   const [chats, setChats] = useState(CHATS);
   const [activeChatId, setActiveChatId] = useState(2);
+  const[isDark,setIsDark]=useState(false)
+
   const activeChatMessages = useMemo(
     () => chats.find(({ id }) => id === activeChatId)?.messages ?? [],
     [chats, activeChatId]
   );
 
-  function updateChats(messages = []) {
-    setChats((prevChats) =>
+  function handleChatMessagesUpdate(messages) {
+    const title=messages[0]?.content.split(" ").slice(0,7).join(" ");
+
+      setChats((prevChats) =>
       prevChats.map((chat) =>
-        chat.id === activeChatId ? { ...chat, messages } : chat
+        chat.id === activeChatId ? { ...chat,title:chat.title ?? title, messages } : chat
       )
     );
   }
 
-  function handleChatMessagesUpdate(messages) {
-    updateChats(messages);
+  function handleNewChatCreate(){
+    const id=uuidv4();
+
+    setActiveChatId(id);
+    setChats((prevChats)=>[
+      ...prevChats,{id,messages:[]}
+    ])
   }
 
   const assistant = useMemo(()=>{
@@ -58,16 +69,33 @@ function App() {
       return new Assistant(history,"gemini-2.5-flash")
     },[activeChatId,activeChatMessages])
   
+    const toggleTheme=()=>{
+      setIsDark(!isDark);
+      document.documentElement.style.colorScheme=isDark?'light':'dark'
+    }
+
+    function handleActiveChatIdChange(id){
+      setActiveChatId(id);
+      setChats((prevChats)=>prevChats.filter(({messages})=>messages.length>0))
+    }
+
   return (
     <div className={styles.App}>
-      <header className={styles.Header}>
+      <div className={styles.HeaderFlex}>
+        <header className={styles.Header}>
       <h2 className={styles.Title}>Stride</h2>
-    </header>
+        </header>
+     <div className={styles.ThemeIcon}>
+       <Theme onToggle={toggleTheme} />
+     </div>
+      </div>
       <div className={styles.Content}>
         <Sidebar
           chats={chats}
           activeChatId={activeChatId}
-          onActiveChatIdChange={setActiveChatId}
+          activeChatMessages={activeChatMessages}
+          onActiveChatIdChange={handleActiveChatIdChange}
+          onNewChatCreate={handleNewChatCreate}
         />
 
         <main className={styles.Main}>

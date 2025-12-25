@@ -1,5 +1,5 @@
 import styles from "./Theme.module.css"
-import Image from "/images/darkmode.png"
+import Image from "./darkmode.png"
 
 export function Theme({onToggle}){
   return (
