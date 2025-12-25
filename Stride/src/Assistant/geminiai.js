@@ -7,9 +7,26 @@ const googleai = new GoogleGenAI({
 export class Assistant {
   #chat;
   #modelName;
+  #storageKey="stride-history";
 
-  constructor(history = [], model = "gemini-1.5-flash",) {
+  constructor(history = [], model = "gemini-2.5-flash",) {
+
     this.#modelName=model;
+
+    const saved=localStorage.getItem(this.#storageKey);
+    let History=[];
+
+    if (saved) {
+      try {
+
+        const rawHistory = JSON.parse(saved);
+
+        History=rawHistory.filter(entry=>entry.role==='user'|| entry.role==='model')
+        console.log("Stride loaded history:", History.length, "messages found.");
+      } catch (e) {
+        console.error("Memory corruption:", e);
+      }
+    }
 
    this.#chat=googleai.chats.create({
       model:this.#modelName,
@@ -22,13 +39,17 @@ export class Assistant {
         - Use your expert knowledge to help with my studies.
       `,
     },
-  history:history,
+  history:History,
   })
   }
-
+  
+  #persist(){
+    localStorage.setItem(this.#storageKey,JSON.stringify(this.#chat.history))
+  }
   async chat(content) {
     try {
       const result = await this.#chat.sendMessage({ message: content });
+      this.#persist();
       return result.text;
     } catch (error) {
       throw error;
@@ -43,6 +64,7 @@ export class Assistant {
         if (chunk.text) {
           yield chunk.text;
         }
+        this.#persist();
       }
     } catch (error) {
       throw error;
