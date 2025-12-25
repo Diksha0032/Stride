@@ -32,3 +32,13 @@
     background: light-dark(#f3f3f3, #303030);
   }
 }
+
+.Markdown pre {
+  white-space: pre-wrap;
+}
+
+.Markdown pre:has(code) {
+  padding: 8px;
+  border-radius: 8px;
+  background: light-dark(#f9f9f9, #171717);
+}

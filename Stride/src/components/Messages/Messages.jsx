@@ -36,7 +36,9 @@ export function Messages({ messages }) {
           <div key={groupIndex} className={styles.Group}>
             {messages.map(({ role, content }, index) => (
               <div key={index} className={styles.Message} data-role={role}>
-                <Markdown>{content}</Markdown>
+                <div className={styles.Markdown}>
+                  <Markdown>{content || ""}</Markdown>
+                </div>
               </div>
             ))}
           </div>
