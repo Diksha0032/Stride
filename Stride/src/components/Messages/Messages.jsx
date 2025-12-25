@@ -14,8 +14,10 @@ export function Messages({ messages }) {
   const messagesGroups = useMemo(
     () =>
       messages.reduce((groups, message) => {
-        if (message.role === "user") groups.push([]);
-        groups[groups.length - 1].push(message);
+        if (message.role === "user" || groups.length === 0) groups.push([]);
+        if (message.role === "user" || message.role === "assistant" || message.role === "model") {
+          groups[groups.length - 1].push(message);
+        }
         return groups;
       }, []),
     [messages]

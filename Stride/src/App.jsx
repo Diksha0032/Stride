@@ -7,7 +7,10 @@ import {Theme} from "./components/Theme/Theme"
 import styles from './App.module.css'
 
 function App() {
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState(()=>{
+    const saved=localStorage.getItem('stride-history');
+    return saved?JSON.parse(saved):[];
+  });
   const [activeChatId, setActiveChatId] = useState();
   const[isDark,setIsDark]=useState(false)
 
@@ -15,13 +18,22 @@ function App() {
     () => chats.find(({ id }) => id === activeChatId)?.messages ?? [],
     [chats, activeChatId]
   );
+  
+  useEffect(()=>{
+    localStorage.setItem('stride-history',JSON.stringify(chats));
+  },[chats]);
 
   useEffect(()=>{
-    handleNewChatCreate();
+    if(chats.length===0){
+      handleNewChatCreate();
+    }
+    else{
+      setActiveChatId(chats[chats.length-1].id)
+    }
   },[])
 
   function handleChatMessagesUpdate(messages) {
-    const title=messages[0]?.content.split(" ").slice(0,7).join(" ");
+    const title=messages[0]?.content?.split(" ").slice(0,7).join(" ");
 
       setChats((prevChats) =>
       prevChats.map((chat) =>
@@ -44,15 +56,15 @@ function App() {
         role:m.role==="assistant"?"model":"user",
         parts:[{text:m.content}]
       }))
-      return new Assistant(history,"gemini-2.5-flash")
-    },[activeChatId,activeChatMessages])
+      return new Assistant(history,"gemini-1.5-flash")
+    },[activeChatId])
   
     
     function handleActiveChatIdChange(id){
       setActiveChatId(id);
       setChats((prevChats)=>prevChats.filter(({messages})=>messages.length>0))
     }
-    
+
     const toggleTheme=()=>{
       setIsDark(!isDark);
       document.documentElement.style.colorScheme=isDark?'light':'dark'
