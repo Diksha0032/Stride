@@ -8,17 +8,31 @@
 }
 
 .Header {
+  padding-left: calc(260px + 16px);
   text-align: center;
+}
+
+.Content {
+  display: flex;
+  flex-grow: 1;
+  gap: 16px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.Main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 16px;
 }
 
 .Title {
   margin: 0;
 }
 
-.ChatContainer {
-  flex-grow: 1;
-  width: 100%;
-  background: light-dark(#ffffff,#212121);
-  border-radius: 16px;
-  overflow-y: auto;
+@media screen and (max-width: 768px) {
+  .Header {
+    padding-left: 0;
+  }
 }

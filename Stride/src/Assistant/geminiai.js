@@ -1,30 +1,39 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+// geminiai.js - Complete rewrite for @google/genai
+import { GoogleGenAI } from "@google/genai";
 
-const googleai=new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_AI_API_KEY)
+const googleai = new GoogleGenAI({
+  apiKey: import.meta.env.VITE_GOOGLE_AI_API_KEY,
+});
 
-export class Assistant{
-  #chat;
+export class Assistant {
+  #model;
 
-  constructor(history=[]){
-    const gemini=googleai.getGenerativeModel({model:"models/gemini-2.5-flash",
-      systemInstruction: `
-        Your name is Stride. You are a human-like buddy & student mentor.
-        - Be chill and empathetic if I fail ("Restart, it's okay").
-        - Be a tough bro if I make excuses ("Get a grip!").
-        - Track my goals and show progress tables/charts when asked.
-        - Use your expert knowledge to help with my studies.
-      `});
-    this.#chat=gemini.startChat({history});
+  constructor(history = [], model = "gemini-1.5-flash") {
+    this.#model = model;
   }
 
-
-async chat(content){
-  try{
-    const timeContext = `[Today's Date: ${new Date().toLocaleDateString()}] `;
-    const result=await this.#chat.sendMessage(timeContext+content);
-    return result.response.text();
-  }catch(error){
-    throw error;
+  async chat(content) {
+    try {
+      const chat = googleai.chats.create({ model: this.#model });
+      const result = await chat.sendMessage({ message: content });
+      return result.text;
+    } catch (error) {
+      throw error;
+    }
   }
-}
+
+  async *chatStream(content) {
+    try {
+      const chat = googleai.chats.create({ model: this.#model });
+      const result = await chat.sendMessageStream({ message: content });
+
+      for await (const chunk of result) {
+        if (chunk.text) {
+          yield chunk.text;
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 }
