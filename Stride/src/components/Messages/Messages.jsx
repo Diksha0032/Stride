@@ -15,6 +15,7 @@ export function Messages({ messages }) {
     () =>
       messages.reduce((groups, message) => {
         if (message.role === "user" || groups.length === 0) groups.push([]);
+
         if (message.role === "user" || message.role === "assistant" || message.role === "model") {
           groups[groups.length - 1].push(message);
         }
@@ -37,7 +38,7 @@ export function Messages({ messages }) {
         (messages, groupIndex) => (
           <div key={groupIndex} className={styles.Group}>
             {messages.map(({ role, content }, index) => (
-              <div key={index} className={styles.Message} data-role={role}>
+              <div key={index} className={styles.Message} data-role={role === "model" ? "assistant" : role}>
                 <div className={styles.Markdown}>
                   <Markdown>{content || ""}</Markdown>
                 </div>

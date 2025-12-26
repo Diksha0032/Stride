@@ -53,11 +53,11 @@ function App() {
 
   const assistant = useMemo(()=>{
       const history=activeChatMessages.map(m=>({
-        role:m.role==="assistant"?"model":"user",
-        parts:[{text:m.content}]
+        role:(m.role==="assistant" || m.role === "model") ? "model" : "user",
+        parts:[{text:m.content||""}]
       }))
-      return new Assistant(history,"gemini-1.5-flash")
-    },[activeChatId])
+      return new Assistant(history,"gemini-2.5-flash")
+    },[activeChatId, activeChatMessages.length])
   
     
     function handleActiveChatIdChange(id){

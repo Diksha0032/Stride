@@ -27,11 +27,11 @@ export function Sidebar({ chats, activeChatId,activeChatMessages, onActiveChatId
 
       <div className={styles.Sidebar} data-open={isOpen}>
         <button className={styles.NewChatButton} 
-        disabled={activeChatMessages.length===0}
+        disabled={activeChatMessages?.length===0}
         onClick={onNewChatCreate}>New Chat</button>
         <ul className={styles.Chats}>
           {chats
-          .filter(({messages})=>messages.length>0)
+          .filter((chat)=>chat.messages?.length>0)
           .map((chat) => (
             <li
               key={chat.id}

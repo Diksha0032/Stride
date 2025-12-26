@@ -39,7 +39,7 @@ export class Assistant {
         - Use your expert knowledge to help with my studies.
       `,
     },
-  history:History,
+  history:history,
   })
   }
   
@@ -52,7 +52,8 @@ export class Assistant {
       this.#persist();
       return result.text;
     } catch (error) {
-      throw error;
+      return "Sorry, I'm having a bit of a brain fog right now. Let's try again in a bit, bro!";
+     // throw error;
     }
   }
 
@@ -67,7 +68,7 @@ export class Assistant {
         this.#persist();
       }
     } catch (error) {
-      throw error;
+      yield "Sorry, something went wrong. Try again later!";
     }
   }
 }
