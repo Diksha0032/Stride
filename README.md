@@ -1,4 +1,4 @@
-# 🏃‍♂️ Stride AI | The AI Partner That Keeps You on Track
+# Stride AI | The AI Partner That Keeps You on Track
 
 ---
 
